@@ -1,5 +1,6 @@
 package net.seyarada.pandeloot.nms;
 
+import net.seyarada.pandeloot.trackers.DamageBoard;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -17,6 +18,9 @@ public class PlayerPacketListener implements Listener {
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent e) {
+        DamageBoard.damageBoards.forEach( (entity, damageBoard) ->{
+            damageBoard.playersAndDamage.remove(e.getPlayer().getUniqueId());
+        });
         NMSManager.get().removePlayer(e.getPlayer());
     }
 
