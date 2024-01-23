@@ -6,6 +6,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.ItemDespawnEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
@@ -23,6 +24,16 @@ public class PlayerPacketListener implements Listener {
         });
         NMSManager.get().removePlayer(e.getPlayer());
     }
+
+     @EventHandler
+    public void onPlayerDeath(PlayerDeathEvent e) {
+        DamageBoard.damageBoards.forEach( (entity, damageBoard) ->{
+            damageBoard.playersAndDamage.remove(e.getEntity().getUniqueId());
+        });
+        NMSManager.get().removePlayer(e.getEntity());
+    }
+
+
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onItemPickup(EntityPickupItemEvent e) {

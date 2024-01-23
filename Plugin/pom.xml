@@ -75,13 +75,6 @@
     </dependency>
     <dependency>
       <groupId>net.seyarada</groupId>
-      <artifactId>pandeloot-v1_18</artifactId>
-      <version>v1_18</version>
-      <type>jar</type>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>net.seyarada</groupId>
       <artifactId>pandeloot-v1_18_2</artifactId>
       <version>v1_18_2</version>
       <type>jar</type>
@@ -178,6 +171,13 @@
       <groupId>me.clip</groupId>
       <artifactId>placeholderapi</artifactId>
       <version>2.10.9</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>pl.koral</groupId>
+      <artifactId>MC-Skyblock-Core</artifactId>
+     <version>2.0.0</version>
       <scope>provided</scope>
     </dependency>
 

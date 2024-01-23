@@ -75,7 +75,9 @@ public class FlagManager {
         registerFlag(new HoldingFlag());
         registerFlag(new LastHitFlag());
         registerFlag(new PermissionFlag());
+        registerFlag(new NoPermissionFlag());
         registerFlag(new TopFlag());
+        registerFlag(new OwnerFlag());
 
         if (PandeLoot.mythicEnabled) registerFlag(new MythicConditionFlag());
     }
