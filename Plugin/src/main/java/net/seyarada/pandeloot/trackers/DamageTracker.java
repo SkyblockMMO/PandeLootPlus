@@ -1,15 +1,11 @@
 package net.seyarada.pandeloot.trackers;
 
-import io.lumine.mythic.api.MythicPlugin;
-import io.lumine.mythic.api.mobs.MythicMob;
+import io.lumine.mythic.api.adapters.AbstractLocation;
 import io.lumine.mythic.bukkit.MythicBukkit;
+import io.lumine.mythic.bukkit.events.MythicMobDeathEvent;
 import io.lumine.mythic.core.mobs.ActiveMob;
-import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.api.event.PlayerAttackEvent;
-import io.lumine.mythic.lib.damage.AttackMetadata;
-import io.lumine.mythic.lib.damage.DamageMetadata;
-import io.lumine.mythic.lib.damage.ProjectileAttackMetadata;
-import io.lumine.mythic.lib.player.PlayerMetadata;
+import net.seyarada.pandeloot.PandeLoot;
 import net.seyarada.pandeloot.compatibility.citizens.CitizensCompatibility;
 import net.seyarada.pandeloot.config.Config;
 import net.seyarada.pandeloot.drops.LootDrop;
@@ -24,39 +20,51 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntitySpawnEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class DamageTracker implements Listener {
 
+
+    private final Map<UUID, Long> deathTimeMap = new WeakHashMap<>();
+
+
     @EventHandler(priority = EventPriority.MONITOR)
-    public void onDamaged(PlayerAttackEvent e) {
+    public void onDamaged(EntityDamageByEntityEvent e) {
 
         UUID mob = e.getEntity().getUniqueId();
         if (!DamageBoard.contains(mob)) return;
-
-        Player player = e.getPlayer();
+        Player player;
+        if (e.getDamager() instanceof Player damager) {
+            player = damager;
+        } else if (e.getDamager() instanceof Projectile p && p.getShooter() instanceof Player damager) {
+            player = damager;
+        } else return;
         if (CitizensCompatibility.isFromCitizens(player)) return;
         ActiveMob mythicMob = MythicBukkit.inst().getMobManager().getActiveMob(mob).orElse(null);
-        if(mythicMob == null){
+        if (mythicMob == null) {
             System.out.println("MM niby null");
             return;
         }
+        if (deathTimeMap.containsKey(player.getUniqueId())) {
+            if (deathTimeMap.get(player.getUniqueId()) > System.currentTimeMillis()) {
+                return;
+            } else deathTimeMap.remove(player.getUniqueId());
+        }
         double maxPercentDamage = mythicMob.getType().getConfig().getDouble("maxPercentDamage");
         double maxHp = mythicMob.getEntity().getMaxHealth();
-        double damage = e.getDamage().getDamage();
-        double formatedDamage = maxHp*maxPercentDamage;
-        if(maxPercentDamage > 0 &&  damage > formatedDamage){
+        double damage = e.getFinalDamage();
+        double formatedDamage = maxHp * maxPercentDamage;
+        if (maxPercentDamage > 0 && damage > formatedDamage) {
             damage = formatedDamage;
             e.setCancelled(true);
             LivingEntity livingEntity = (LivingEntity) mythicMob.getEntity().getBukkitEntity();
-            double healthToSet = livingEntity.getHealth() - formatedDamage <=0? 0 : livingEntity.getHealth() - formatedDamage;
-            //Dodawanie do boarda zanim mob umrze bo inaczej nullpointer
+            double healthToSet = livingEntity.getHealth() - formatedDamage <= 0 ? 0 : livingEntity.getHealth() - formatedDamage;
             DamageBoard.addPlayerDamage(mob, player, damage);
             livingEntity.setHealth(healthToSet);
-            livingEntity.damage(formatedDamage,e.getPlayer());
-        }else DamageBoard.addPlayerDamage(mob, player, damage);
+        } else DamageBoard.addPlayerDamage(mob, player, damage);
+
     }
 
 
@@ -66,13 +74,19 @@ public class DamageTracker implements Listener {
             ConfigurationSection config = Config.getMob(entity);
             if (config != null) {
                 boolean shouldTrack = config.contains("Rewards");
+                boolean sortWithParty = config.getBoolean("Options.SortWithParty");
                 if (!shouldTrack) shouldTrack = config.getBoolean("Options.ScoreHologram");
                 if (!shouldTrack) shouldTrack = config.getBoolean("Options.ScoreMessage");
 
-                if (shouldTrack) new DamageBoard(entity);
+                if (shouldTrack) new DamageBoard(entity, sortWithParty);
             }
         }
 
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onDeath(PlayerDeathEvent e) {
+        deathTimeMap.put(e.getEntity().getUniqueId(), System.currentTimeMillis() + 8000);
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
