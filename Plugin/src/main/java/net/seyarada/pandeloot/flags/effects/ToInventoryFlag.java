@@ -8,9 +8,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-//import pl.koral.mcskyblockcore.api.model.SkyblockPlayer;
-//import pl.koral.mcskyblockcore.spigot.SkyblockCore;
-//import pl.koral.mcskyblockcore.spigot.event.CustomPickupEvent;
+import pl.koral.mcskyblockcore.api.model.SkyblockPlayer;
+import pl.koral.mcskyblockcore.spigot.SkyblockCore;
+import pl.koral.mcskyblockcore.spigot.event.CustomPickupEvent;
 
 import java.text.DecimalFormat;
 
@@ -35,7 +35,7 @@ public class ToInventoryFlag implements IItemEvent {
 
             ItemStack newItem = item.getItemStack().clone();
             newItem.setAmount(1);
-        //    SkyblockPlayer skyblockPlayer = SkyblockCore.getInstance().getSkyblockCoreAPI().getLocalSkyblockPLayer(player.getUniqueId());
+            SkyblockPlayer skyblockPlayer = SkyblockCore.getInstance().getSkyblockCoreAPI().getLocalSkyblockPLayer(player.getUniqueId());
             double chances = meta.iDrop().getChance(meta.lootDrop());
 
             int howManyToDrop = getDropWithFortune(chances);
@@ -44,12 +44,12 @@ public class ToInventoryFlag implements IItemEvent {
             if (hasFlag && item.getItemStack().hasItemMeta()) {
 
                 String chatFormat ="§eOtrzymałeś "+ item.getItemStack().getItemMeta().getDisplayName() + " §fx" + howManyToDrop + " §6(§e" + df.format (chances*100) + "%§6)";
-              //  skyblockPlayer.getPlayer().sendMessage(chatFormat);
+                skyblockPlayer.getPlayer().sendMessage(chatFormat);
             }
 
 
             for (int i = 0; i < howManyToDrop; i++) {
-            //    Bukkit.getPluginManager().callEvent(new CustomPickupEvent(skyblockPlayer, newItem, item.getItemStack().getAmount(), null));
+                Bukkit.getPluginManager().callEvent(new CustomPickupEvent(skyblockPlayer, newItem, item.getItemStack().getAmount(), null));
             }
             item.remove();
         }

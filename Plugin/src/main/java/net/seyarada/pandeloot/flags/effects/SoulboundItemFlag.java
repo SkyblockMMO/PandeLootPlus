@@ -1,10 +1,10 @@
 package net.seyarada.pandeloot.flags.effects;
 
-//import io.lumine.mythic.lib.MythicLib;
-//import net.Indyuce.mmoitems.ItemStats;
-//import net.Indyuce.mmoitems.api.item.mmoitem.LiveMMOItem;
-//import net.Indyuce.mmoitems.api.item.mmoitem.MMOItem;
-//import net.Indyuce.mmoitems.stat.data.SoulboundData;
+import io.lumine.mythic.lib.MythicLib;
+import net.Indyuce.mmoitems.ItemStats;
+import net.Indyuce.mmoitems.api.item.mmoitem.LiveMMOItem;
+import net.Indyuce.mmoitems.api.item.mmoitem.MMOItem;
+import net.Indyuce.mmoitems.stat.data.SoulboundData;
 import net.seyarada.pandeloot.drops.ItemDropMeta;
 import net.seyarada.pandeloot.flags.FlagEffect;
 import net.seyarada.pandeloot.flags.enums.FlagPriority;
@@ -26,11 +26,11 @@ public class SoulboundItemFlag implements IItemEvent {
             //meta.lootDrop().p.getInventory().addItem(item.getItemStack());
             Player player = meta.lootDrop().p;
 
-           //var target = MythicLib.plugin.getVersion().getWrapper().getNBTItem(item.getItemStack());
-           //MMOItem targetMMOa = new LiveMMOItem(target);
-           //targetMMOa.setData(ItemStats.SOULBOUND, new SoulboundData(player, 1));
-           //ItemStack output = targetMMOa.newBuilder().build();
-           //item.getItemStack().setItemMeta(output.getItemMeta());
+           var target = MythicLib.plugin.getVersion().getWrapper().getNBTItem(item.getItemStack());
+           MMOItem targetMMOa = new LiveMMOItem(target);
+           targetMMOa.setData(ItemStats.SOULBOUND, new SoulboundData(player, 1));
+           ItemStack output = targetMMOa.newBuilder().build();
+           item.getItemStack().setItemMeta(output.getItemMeta());
         }
 
     }
