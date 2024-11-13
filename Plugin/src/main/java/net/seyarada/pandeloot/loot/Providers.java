@@ -7,6 +7,7 @@ import net.seyarada.pandeloot.drops.IDrop;
 import net.seyarada.pandeloot.drops.ItemDrop;
 import net.seyarada.pandeloot.drops.LootDrop;
 import net.seyarada.pandeloot.flags.FlagPack;
+import net.seyarada.pandeloot.loot.providers.item.BackroomsCitemProvider;
 import net.seyarada.pandeloot.loot.providers.item.MMOItemProvider;
 import net.seyarada.pandeloot.loot.providers.item.MythicItemProvider;
 import net.seyarada.pandeloot.loot.providers.item.VanillaProvider;
@@ -28,7 +29,7 @@ public class Providers {
 
         if(PandeLoot.mythicEnabled) new MythicItemProvider().register("mythicmobs", "mm");
         if(PandeLoot.mmoItemsEnabled) new MMOItemProvider().register("mmoitems", "mi");
-
+        new BackroomsCitemProvider().register("citem","ci","customitem");
         // Entities/Special
         new LootBagProvider().register("lootbag", "lb", "bag");
         new LootTableProvider().register("loottable", "lt", "container");
