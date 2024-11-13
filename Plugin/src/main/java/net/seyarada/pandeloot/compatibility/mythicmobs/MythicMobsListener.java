@@ -31,10 +31,11 @@ public class MythicMobsListener implements Listener {
         if(e.getEntity() instanceof LivingEntity entity) {
             MythicConfig config = e.getMobType().getConfig();
             boolean shouldTrack = config.getStringList("Rewards").size()>0;
+            boolean sortWithParty = config.getBoolean("Options.SortWithParty");
             if(!shouldTrack) shouldTrack = config.getBoolean("Options.ScoreHologram");
             if(!shouldTrack) shouldTrack = config.getBoolean("Options.ScoreMessage");
 
-            if(shouldTrack) new DamageBoard(entity);
+            if(shouldTrack) new DamageBoard(entity,sortWithParty);
         }
     }
 
@@ -46,12 +47,12 @@ public class MythicMobsListener implements Listener {
         MythicConfig config = e.getMobType().getConfig();
         boolean scoreMessage = config.getBoolean("Options.ScoreMessage");
         boolean scoreHologram = config.getBoolean("Options.ScoreHologram");
-
+        boolean killLog = config.getBoolean("Options.KillLog");
         List<String> strings = e.getMobType().getConfig().getStringList("Rewards");
 
         Logger.record();
         DamageBoard damageBoard = DamageBoard.get(mob);
-        damageBoard.compileInformation();
+        damageBoard.compileInformation(killLog);
 
         for(UUID uuid : damageBoard.playersAndDamage.keySet()) {
             Player player = Bukkit.getPlayer(uuid);

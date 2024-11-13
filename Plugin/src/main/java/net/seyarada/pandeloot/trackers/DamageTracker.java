@@ -30,21 +30,22 @@ public class DamageTracker implements Listener {
     private final Map<UUID, Long> deathTimeMap = new WeakHashMap<>();
 
 
-    @EventHandler(priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.MONITOR )
     public void onDamaged(EntityDamageByEntityEvent e) {
 
         UUID mob = e.getEntity().getUniqueId();
         if (!DamageBoard.contains(mob)) return;
+        boolean showMessage = true;
         Player player;
         if (e.getDamager() instanceof Player damager) {
             player = damager;
         } else if (e.getDamager() instanceof Projectile p && p.getShooter() instanceof Player damager) {
+            showMessage = false;
             player = damager;
         } else return;
         if (CitizensCompatibility.isFromCitizens(player)) return;
         ActiveMob mythicMob = MythicBukkit.inst().getMobManager().getActiveMob(mob).orElse(null);
         if (mythicMob == null) {
-            System.out.println("MM niby null");
             return;
         }
         if (deathTimeMap.containsKey(player.getUniqueId())) {
@@ -53,15 +54,28 @@ public class DamageTracker implements Listener {
             } else deathTimeMap.remove(player.getUniqueId());
         }
         double maxPercentDamage = mythicMob.getType().getConfig().getDouble("maxPercentDamage");
+        int customImmuneTicks = mythicMob.getType().getConfig().getInt("noDamageMs");
+        int distance = mythicMob.getType().getConfig().getInt("Options.MaxCombatDistance");
+
+        if (distance > 0 && e.getEntity().getLocation().distance(player.getLocation()) > distance) {
+            if(showMessage) player.sendMessage("§cStoisz zbyt daleko od celu by zadać mu obrażenia");
+            return;
+        }
+        
         double maxHp = mythicMob.getEntity().getMaxHealth();
         double damage = e.getFinalDamage();
         double formatedDamage = maxHp * maxPercentDamage;
         if (maxPercentDamage > 0 && damage > formatedDamage) {
-            damage = formatedDamage;
             e.setCancelled(true);
+            if (!DamageBoard.canPlayerAttack(mob, player)) return;
+            damage = formatedDamage;
             LivingEntity livingEntity = (LivingEntity) mythicMob.getEntity().getBukkitEntity();
             double healthToSet = livingEntity.getHealth() - formatedDamage <= 0 ? 0 : livingEntity.getHealth() - formatedDamage;
             DamageBoard.addPlayerDamage(mob, player, damage);
+
+
+            if(customImmuneTicks >0) DamageBoard.addToNoDmgMsMap(mob, player, customImmuneTicks);
+
             livingEntity.setHealth(healthToSet);
         } else DamageBoard.addPlayerDamage(mob, player, damage);
 
@@ -98,11 +112,12 @@ public class DamageTracker implements Listener {
         if (config == null) return;
         boolean scoreMessage = config.getBoolean("Options.ScoreMessage");
         boolean scoreHologram = config.getBoolean("Options.ScoreHologram");
+        boolean killLog = config.getBoolean("Options.KillLog");
 
         List<String> strings = config.getStringList("Rewards");
 
         DamageBoard damageBoard = DamageBoard.get(mob);
-        damageBoard.compileInformation();
+        damageBoard.compileInformation(killLog);
 
 
         for (UUID uuid : damageBoard.playersAndDamage.keySet()) {

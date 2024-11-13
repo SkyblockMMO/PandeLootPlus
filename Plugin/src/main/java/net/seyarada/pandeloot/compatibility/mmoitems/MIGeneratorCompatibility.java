@@ -1,5 +1,6 @@
 package net.seyarada.pandeloot.compatibility.mmoitems;
 
+import net.Indyuce.mmoitems.ItemStats;
 import net.Indyuce.mmoitems.MMOItems;
 import net.Indyuce.mmoitems.api.ItemTier;
 import net.Indyuce.mmoitems.api.Type;
@@ -8,6 +9,7 @@ import net.Indyuce.mmoitems.api.item.mmoitem.MMOItem;
 import net.Indyuce.mmoitems.api.item.template.MMOItemTemplate;
 import net.Indyuce.mmoitems.api.player.PlayerData;
 import net.Indyuce.mmoitems.api.player.RPGPlayer;
+import net.Indyuce.mmoitems.stat.data.SoulboundData;
 import net.seyarada.pandeloot.drops.LootDrop;
 import net.seyarada.pandeloot.flags.FlagPack;
 import net.seyarada.pandeloot.flags.effects.TypeFlag;
@@ -28,25 +30,24 @@ public class MIGeneratorCompatibility {
         MMOItemTemplate template = MMOItems.plugin.getTemplates().getTemplateOrThrow(type, itemStr.toUpperCase().replace("-", "_"));
 
         int itemLevel = 0;
-        if(miData.containsKey("level")) {
+        if (miData.containsKey("level")) {
             itemLevel = (int) StringParser.parseAndMath(miData.getString("level"), drop);
-        } else if(miData.containsKey("matchlevel") && rpgPlayer!=null) {
+        } else if (miData.containsKey("matchlevel") && rpgPlayer != null) {
             itemLevel = MMOItems.plugin.getTemplates().rollLevel(rpgPlayer.getLevel());
-        } else if(template.hasOption(MMOItemTemplate.TemplateOption.LEVEL_ITEM) && rpgPlayer!=null)  {
+        } else if (template.hasOption(MMOItemTemplate.TemplateOption.LEVEL_ITEM) && rpgPlayer != null) {
             MMOItems.plugin.getTemplates().rollLevel(rpgPlayer.getLevel());
         }
 
 
         ItemTier itemTier = null;
-        if(miData.containsKey("tier")) {
+        if (miData.containsKey("tier")) {
             String tier = miData.getString("tier").toUpperCase().replace("-", "_");
             itemTier = MMOItems.plugin.getTiers().getOrThrow(tier);
-        } else if(template.hasOption(MMOItemTemplate.TemplateOption.TIERED)) {
+        } else if (template.hasOption(MMOItemTemplate.TemplateOption.TIERED)) {
             itemTier = MMOItems.plugin.getTemplates().rollTier();
         }
 
         MMOItemBuilder builder = new MMOItemBuilder(template, itemLevel, itemTier);
-
         MMOItem mmoitem = builder.build();
         return mmoitem.newBuilder().build();
 

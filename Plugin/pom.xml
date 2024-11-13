@@ -118,13 +118,6 @@
       <optional>true</optional>
     </dependency>
 
-    <!-- DiscordSRV -->
-    <dependency>
-      <groupId>com.discordsrv</groupId>
-      <artifactId>discordsrv</artifactId>
-      <version>1.24.0</version>
-      <scope>provided</scope>
-    </dependency>
 
     <!-- MythicLib -->
     <dependency>

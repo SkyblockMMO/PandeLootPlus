@@ -58,11 +58,12 @@ public class FlagManager {
         registerFlag(new StopFlag());
         registerFlag(new TitleFlag());
         registerFlag(new ToInventoryFlag());
+        registerFlag(new SoulboundItemFlag());
+        registerFlag(new DisplayDropOnChatFlag());
         registerFlag(new ToastFlag());
         registerFlag(new VisibilityFlag());
         registerFlag(new VoidProtectionFlag());
 
-        if (PandeLoot.discordEnabled) registerFlag(new DiscordFlag());
         if (PandeLoot.ecoEnabled) registerFlag(new EconomyFlag());
         if (PandeLoot.mythicEnabled) registerFlag(new MythicSkillFlag());
         if (PandeLoot.mmoItemsEnabled) registerFlag(new TypeFlag());
