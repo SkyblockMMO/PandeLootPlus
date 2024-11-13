@@ -46,8 +46,6 @@ public class ToInventoryFlag implements IItemEvent {
                 String chatFormat ="§eOtrzymałeś "+ item.getItemStack().getItemMeta().getDisplayName() + " §fx" + howManyToDrop + " §6(§e" + df.format (chances*100) + "%§6)";
                 skyblockPlayer.getPlayer().sendMessage(chatFormat);
             }
-
-
             for (int i = 0; i < howManyToDrop; i++) {
                 Bukkit.getPluginManager().callEvent(new CustomPickupEvent(skyblockPlayer, newItem, item.getItemStack().getAmount(), null));
             }
