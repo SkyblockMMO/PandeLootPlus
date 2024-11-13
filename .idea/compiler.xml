@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="pandeloot-v1_17" />
+        <module name="pandeloot-v1_19_3" />
+        <module name="pandeloot-v1_19_2" />
+        <module name="pandeloot-v1_19" />
+        <module name="pandeloot-v1_18_2" />
+        <module name="pandeloot-api" />
+      </profile>
+      <profile name="Annotation profile for PandeLoot Parent" enabled="true">
+        <sourceOutputDir name="../target/generated-sources/annotations" />
+        <sourceTestOutputDir name="../target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="pandeloot" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="pandeloot-v1_18" target="16" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

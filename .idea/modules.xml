@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/Plugin/pandeloot.iml" filepath="$PROJECT_DIR$/Plugin/pandeloot.iml" />
+      <module fileurl="file://$PROJECT_DIR$/API/pandeloot-api.iml" filepath="$PROJECT_DIR$/API/pandeloot-api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/v1_17/pandeloot-v1_17.iml" filepath="$PROJECT_DIR$/v1_17/pandeloot-v1_17.iml" />
+      <module fileurl="file://$PROJECT_DIR$/v1_18_2/pandeloot-v1_18_2.iml" filepath="$PROJECT_DIR$/v1_18_2/pandeloot-v1_18_2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/v1_19/pandeloot-v1_19.iml" filepath="$PROJECT_DIR$/v1_19/pandeloot-v1_19.iml" />
+      <module fileurl="file://$PROJECT_DIR$/v1_19_2/pandeloot-v1_19_2.iml" filepath="$PROJECT_DIR$/v1_19_2/pandeloot-v1_19_2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/v1_19_3/pandeloot-v1_19_3.iml" filepath="$PROJECT_DIR$/v1_19_3/pandeloot-v1_19_3.iml" />
+    </modules>
+  </component>
+</project>
