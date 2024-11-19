@@ -61,10 +61,12 @@ public class ActiveDropListener implements Listener {
             return;
         }
 
-        if(NMSManager.isHiddenFor(i.getEntityId(), player.getUniqueId())) {
-            e.setCancelled(true);
-            return;
-        }
+       // if(NMSManager.isHiddenFor(i.getEntityId(), player.getUniqueId())) {
+       //     e.setCancelled(true);
+       //     return;
+       // }
+
+
 
         PersistentDataContainer data = i.getItemStack().getItemMeta().getPersistentDataContainer();
         boolean isLocked = data.has(Constants.LOCK_LOOTBAG, PersistentDataType.STRING);
