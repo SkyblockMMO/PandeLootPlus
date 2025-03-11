@@ -96,6 +96,13 @@
     </dependency>
     <dependency>
       <groupId>net.seyarada</groupId>
+      <artifactId>pandeloot-v1_20_4</artifactId>
+      <version>v1_20_4</version>
+      <type>jar</type>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>net.seyarada</groupId>
       <artifactId>pandeloot-api</artifactId>
       <version>API</version>
       <type>jar</type>

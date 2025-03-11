@@ -19,20 +19,24 @@ public final class NMSManager {
     static NMSMethods nms;
 
     static {
+        System.out.println("TEST DEBUG VERSION TEST");
+
         String packageName = Bukkit.getServer().getClass().getPackage().getName();
         // Get full package string of CraftServer.
         // org.bukkit.craftbukkit.version
         String version = packageName.substring(packageName.lastIndexOf('.') + 1);
         // Get the last element of the package
 
+
         try {
-            final Class<?> clazz = Class.forName("net.seyarada.pandeloot.nms." + version + "." + version.toUpperCase());
+            Bukkit.getLogger().info(DECORATED_NAME + "Loading support for " + "v1_20_R4");
+            final Class<?> clazz = Class.forName("net.seyarada.pandeloot.nms." + "v1_20_R4" + "." + "V1_20_R4");
             // Check if we have a NMSHandler class at that location.
             if (NMSMethods.class.isAssignableFrom(clazz)) { // Make sure it actually implements NMS
                 nms = (NMSMethods) clazz.getConstructor().newInstance(); // Set our handler
-                Bukkit.getLogger().info(DECORATED_NAME + "Loading support for " + version);
             }
         } catch (final Exception e) {
+            Bukkit.getLogger().info(DECORATED_NAME + "Loading support for " + version);
             e.printStackTrace();
             Bukkit.getLogger().severe(DECORATED_NAME + "Could not find support for this CraftBukkit version");
         }
