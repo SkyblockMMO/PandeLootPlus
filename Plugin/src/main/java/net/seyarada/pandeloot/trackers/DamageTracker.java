@@ -50,6 +50,7 @@ public class DamageTracker implements Listener {
         }
         if (deathTimeMap.containsKey(player.getUniqueId())) {
             if (deathTimeMap.get(player.getUniqueId()) > System.currentTimeMillis()) {
+                e.setCancelled(true);
                 return;
             } else deathTimeMap.remove(player.getUniqueId());
         }
@@ -65,6 +66,7 @@ public class DamageTracker implements Listener {
         double maxHp = mythicMob.getEntity().getMaxHealth();
         double damage = e.getFinalDamage();
         double formatedDamage = maxHp * maxPercentDamage;
+
         if (maxPercentDamage > 0 && damage > formatedDamage) {
             e.setCancelled(true);
             if (!DamageBoard.canPlayerAttack(mob, player)) return;
@@ -72,12 +74,19 @@ public class DamageTracker implements Listener {
             LivingEntity livingEntity = (LivingEntity) mythicMob.getEntity().getBukkitEntity();
             double healthToSet = livingEntity.getHealth() - formatedDamage <= 0 ? 0 : livingEntity.getHealth() - formatedDamage;
             DamageBoard.addPlayerDamage(mob, player, damage);
-
-
             if(customImmuneTicks >0) DamageBoard.addToNoDmgMsMap(mob, player, customImmuneTicks);
 
+
+
             livingEntity.setHealth(healthToSet);
-        } else DamageBoard.addPlayerDamage(mob, player, damage);
+        } else {
+            if (!DamageBoard.canPlayerAttack(mob, player)) {
+                e.setCancelled(true);
+                return;
+            }
+            DamageBoard.addPlayerDamage(mob, player, damage);
+            if(customImmuneTicks >0) DamageBoard.addToNoDmgMsMap(mob, player, customImmuneTicks);
+        }
 
     }
 

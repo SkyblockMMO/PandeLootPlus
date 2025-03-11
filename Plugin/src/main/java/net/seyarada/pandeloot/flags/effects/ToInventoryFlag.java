@@ -38,7 +38,7 @@ public class ToInventoryFlag implements IItemEvent {
             SkyblockPlayer skyblockPlayer = SkyblockCore.getInstance().getSkyblockCoreAPI().getLocalSkyblockPLayer(player.getUniqueId());
             double chances = meta.iDrop().getChance(meta.lootDrop());
 
-            int howManyToDrop = getDropWithFortune(chances);
+            int howManyToDrop = getAmountFromChancesMoreThanOne(chances);
 
             boolean hasFlag = meta.iDrop().getFlagPack().hasFlag(DisplayDropOnChatFlag.class);
             if (hasFlag && item.getItemStack().hasItemMeta()) {
@@ -54,7 +54,7 @@ public class ToInventoryFlag implements IItemEvent {
 
     }
 
-    public int getDropWithFortune(double chances) {
+    public int getAmountFromChancesMoreThanOne(double chances) {
         if (chances < 1) return 1;
 
         double reszta = chances % 1;
