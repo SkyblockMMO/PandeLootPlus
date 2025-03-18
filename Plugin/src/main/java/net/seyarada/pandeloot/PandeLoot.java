@@ -26,6 +26,7 @@ public class PandeLoot extends JavaPlugin implements Listener {
     public static PandeLoot inst;
     public static boolean papiEnabled = false;
     public static boolean mythicEnabled = false;
+    public static boolean pandaCoreEnabled = false;
     public static boolean ecoEnabled = false;
     public static boolean discordEnabled = false;
     public static boolean mmoItemsEnabled = false;
@@ -63,40 +64,47 @@ public class PandeLoot extends JavaPlugin implements Listener {
 
     void checkCompatibilities() {
         PluginManager pluginManager = getServer().getPluginManager();
-        if(pluginManager.getPlugin("MythicMobs")!=null) {
+        if (pluginManager.getPlugin("MythicMobs") != null) {
             mythicEnabled = true;
             pluginManager.registerEvents(new MythicMobsListener(), this);
             Logger.userInfo("Loaded MythicMobs support");
         }
 
-        if(pluginManager.getPlugin("Vault")!=null) {
+        if (pluginManager.getPlugin("PandaCore") != null) {
+            pandaCoreEnabled = true;
+            pluginManager.registerEvents(new MythicMobsListener(), this);
+            Logger.userInfo("Loaded MythicMobs support");
+        }
+
+
+        if (pluginManager.getPlugin("Vault") != null) {
             ecoEnabled = true;
             VaultCompatibility.setupEconomy();
             Logger.userInfo("Loaded Vault support");
         }
 
-        if(pluginManager.getPlugin("Citizens")!=null) {
+        if (pluginManager.getPlugin("Citizens") != null) {
             CitizensCompatibility.enabled = true;
             Logger.userInfo("Loaded Citizens support");
         }
 
-        if(pluginManager.getPlugin("PlaceholderAPI")!=null) {
+        if (pluginManager.getPlugin("PlaceholderAPI") != null) {
             papiEnabled = true;
             new PAPIExtension().register();
             Logger.userInfo("Loaded PAPI support");
         }
 
-        if(pluginManager.getPlugin("DiscordSRV")!=null) {
+        if (pluginManager.getPlugin("DiscordSRV") != null) {
             discordEnabled = true;
             Logger.userInfo("Loaded DiscordSRV support");
         }
 
-        if(pluginManager.getPlugin("MMOItems")!=null) {
+        if (pluginManager.getPlugin("MMOItems") != null) {
             mmoItemsEnabled = true;
             Logger.userInfo("Loaded MMOItems support");
         }
 
-        if(pluginManager.getPlugin("MMOCore")!=null) {
+        if (pluginManager.getPlugin("MMOCore") != null) {
             pluginManager.registerEvents(new MMOCoreCompatibility(), this);
             Logger.userInfo("Loaded MMOCore support");
         }

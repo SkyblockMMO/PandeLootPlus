@@ -65,7 +65,7 @@ public class FlagManager {
 
         if (PandeLoot.ecoEnabled) registerFlag(new EconomyFlag());
         if (PandeLoot.mythicEnabled) registerFlag(new MythicSkillFlag());
-         registerFlag(new TypeFlag());
+        registerFlag(new TypeFlag());
     }
 
     public void loadConditionFlags() {
@@ -80,12 +80,13 @@ public class FlagManager {
         registerFlag(new OwnerFlag());
 
         if (PandeLoot.mythicEnabled) registerFlag(new MythicConditionFlag());
+        if (PandeLoot.pandaCoreEnabled) registerFlag(new QuestTagFlag());
     }
 
     void registerFlag(IFlag flag) {
         FlagEffect flagEffect = flag.getClass().getAnnotation(FlagEffect.class);
         String flagID = flagEffect.id().toLowerCase();
-        if(flagAlreadyRegistered(flagID)) return;
+        if (flagAlreadyRegistered(flagID)) return;
 
         loadedFlags++;
 
@@ -95,8 +96,8 @@ public class FlagManager {
     }
 
     boolean flagAlreadyRegistered(String id) {
-        if(flags.containsKey(id)) {
-            Logger.userWarning("Error registering flag by ID: "+id+", flag already exists");
+        if (flags.containsKey(id)) {
+            Logger.userWarning("Error registering flag by ID: " + id + ", flag already exists");
             return true;
         }
         return false;

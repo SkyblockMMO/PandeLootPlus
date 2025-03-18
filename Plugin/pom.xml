@@ -210,6 +210,14 @@
       <scope>provided</scope>
     </dependency>
 
+    <!-- PandaCore - questy  # https://github.com/Kaps3l3k/PandaCore -->
+    <dependency>
+      <groupId>pl.kaps3l</groupId>
+      <artifactId>PandaCore</artifactId>
+      <version>1.0-SNAPSHOT</version>
+      <scope>provided</scope>
+    </dependency>
+
   </dependencies>
 
   <build>

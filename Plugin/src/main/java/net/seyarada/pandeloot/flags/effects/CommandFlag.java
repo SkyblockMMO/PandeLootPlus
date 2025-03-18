@@ -8,14 +8,17 @@ import org.bukkit.Bukkit;
 
 import java.util.Collections;
 
-@FlagEffect(id="command", description="Executes a command")
+@FlagEffect(id = "command", description = "Executes a command")
 public class CommandFlag implements IGeneralEvent {
 
-	@Override
-	public void onCallGeneral(ItemDropMeta meta) {
-		if(meta.getString()!=null) {
-			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), meta.getString());
-		}
-	}
+    @Override
+    public void onCallGeneral(ItemDropMeta meta) {
+        if (meta.getString() != null) {
+            String[] commands = meta.getString().split("\\|");
+            for (String command : commands) {
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
+            }
+        }
+    }
 
 }
