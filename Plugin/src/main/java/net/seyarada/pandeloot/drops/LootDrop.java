@@ -10,7 +10,6 @@ import net.seyarada.pandeloot.drops.containers.LootBag;
 import net.seyarada.pandeloot.flags.effects.AmountFlag;
 import net.seyarada.pandeloot.flags.effects.DelayFlag;
 import net.seyarada.pandeloot.flags.effects.SkipFlag;
-import net.seyarada.pandeloot.nms.NMSManager;
 import net.seyarada.pandeloot.trackers.DamageBoard;
 import net.seyarada.pandeloot.utils.ChatUtils;
 import net.seyarada.pandeloot.utils.MathUtils;
@@ -21,10 +20,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class LootDrop {
 
@@ -215,7 +211,7 @@ public class LootDrop {
             }
         });
 
-        NMSManager.get().hologram(400, loc, this.p, lines, PandeLoot.inst);
+      // hologram(400, loc, this.p, lines, PandeLoot.inst);
     }
 
     public void displayScoreMessage() {

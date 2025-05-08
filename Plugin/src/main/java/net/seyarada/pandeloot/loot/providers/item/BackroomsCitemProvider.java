@@ -1,7 +1,6 @@
 package net.seyarada.pandeloot.loot.providers.item;
 
-import me.buch.backroomscore.BackroomsCore;
-import me.buch.backroomscore.customItem.ItemBase;
+import me.buch.backroomscore.paper.BackroomsCore;
 import net.seyarada.pandeloot.api.ItemProvider;
 import net.seyarada.pandeloot.drops.LootDrop;
 import net.seyarada.pandeloot.flags.FlagPack;
