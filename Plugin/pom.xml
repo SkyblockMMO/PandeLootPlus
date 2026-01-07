@@ -96,6 +96,13 @@
     </dependency>
     <dependency>
       <groupId>net.seyarada</groupId>
+      <artifactId>pandeloot-v1_21_10</artifactId>
+      <version>v1_21_10</version>
+      <type>jar</type>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>net.seyarada</groupId>
       <artifactId>pandeloot-api</artifactId>
       <version>API</version>
       <type>jar</type>
@@ -185,7 +192,7 @@
     <dependency>
       <groupId>com.github.MilkBowl</groupId>
       <artifactId>VaultAPI</artifactId>
-      <version>1.7</version>
+      <version>1.7.1</version>
       <scope>provided</scope>
     </dependency>
 
@@ -228,7 +235,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
-        <version>1.4</version>
+        <version>3.5.2</version>
         <executions>
           <execution>
             <phase>package</phase>

@@ -7,10 +7,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="pandeloot-v1_17" />
-        <module name="pandeloot-v1_19_3" />
-        <module name="pandeloot-v1_19_2" />
-        <module name="pandeloot-v1_19" />
-        <module name="pandeloot-v1_20_2" />
+        <module name="pandeloot-v1_21_10" />
         <module name="pandeloot-v1_18_2" />
         <module name="pandeloot-api" />
       </profile>
@@ -23,6 +20,10 @@
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="pandeloot-v1_18" target="16" />
+      <module name="pandeloot-v1_19" target="16" />
+      <module name="pandeloot-v1_19_2" target="16" />
+      <module name="pandeloot-v1_19_3" target="16" />
+      <module name="pandeloot-v1_20_2" target="16" />
     </bytecodeTargetLevel>
   </component>
 </project>
