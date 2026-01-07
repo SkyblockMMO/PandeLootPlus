@@ -69,7 +69,9 @@ public class DamageTracker implements Listener {
 
         if (maxPercentDamage > 0 && damage > formatedDamage) {
             e.setCancelled(true);
-            if (!DamageBoard.canPlayerAttack(mob, player)) return;
+            if (!DamageBoard.canPlayerAttack(mob, player)) {
+                return;
+            }
             damage = formatedDamage;
             LivingEntity livingEntity = (LivingEntity) mythicMob.getEntity().getBukkitEntity();
             double healthToSet = livingEntity.getHealth() - formatedDamage <= 0 ? 0 : livingEntity.getHealth() - formatedDamage;

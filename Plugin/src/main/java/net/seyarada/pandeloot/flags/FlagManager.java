@@ -67,6 +67,8 @@ public class FlagManager {
         if (PandeLoot.ecoEnabled) registerFlag(new EconomyFlag());
         if (PandeLoot.mythicEnabled) registerFlag(new MythicSkillFlag());
         if (PandeLoot.mmoItemsEnabled) registerFlag(new TypeFlag());
+        registerFlag(new MMOLevelFlag());
+        registerFlag(new MMOClassFlag());
     }
 
     public void loadConditionFlags() {
@@ -86,7 +88,7 @@ public class FlagManager {
     void registerFlag(IFlag flag) {
         FlagEffect flagEffect = flag.getClass().getAnnotation(FlagEffect.class);
         String flagID = flagEffect.id().toLowerCase();
-        if(flagAlreadyRegistered(flagID)) return;
+        if (flagAlreadyRegistered(flagID)) return;
 
         loadedFlags++;
 
@@ -96,8 +98,8 @@ public class FlagManager {
     }
 
     boolean flagAlreadyRegistered(String id) {
-        if(flags.containsKey(id)) {
-            Logger.userWarning("Error registering flag by ID: "+id+", flag already exists");
+        if (flags.containsKey(id)) {
+            Logger.userWarning("Error registering flag by ID: " + id + ", flag already exists");
             return true;
         }
         return false;
