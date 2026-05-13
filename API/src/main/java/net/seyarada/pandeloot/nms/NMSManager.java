@@ -21,12 +21,43 @@ public final class NMSManager {
     static {
         String packageName = Bukkit.getServer().getClass().getPackage().getName();
         // Get full package string of CraftServer.
-        // org.bukkit.craftbukkit.version
+        // org.bukkit.craftbukkit.version (or org.bukkit.craftbukkit for 1.20.5+)
         String version = packageName.substring(packageName.lastIndexOf('.') + 1);
         // Get the last element of the package
+        
+        Bukkit.getLogger().info(DECORATED_NAME + "Detected package version: " + version);
+        
+        // Handle versions without package suffix (1.20.5+)
+        if (version.equals("craftbukkit") || version.equals("craftserver")) {
+            String mcVersion = Bukkit.getVersion();
+            Bukkit.getLogger().info(DECORATED_NAME + "Minecraft version: " + mcVersion);
+            // Map Minecraft version to NMS version format
+            // 1.21.10 -> v1_21_R6
+            if (mcVersion != null) {
+                if (mcVersion.startsWith("1.21.10") || mcVersion.equals("1.21.10")) {
+                    version = "v1_21_R6";
+                } else if (mcVersion.startsWith("1.21")) {
+                    version = "v1_21_R6"; // Default to R6 for 1.21.x
+                } else {
+                    // Fallback: try to parse version
+                    version = "v" + mcVersion.replace(".", "_") + "_R1";
+                }
+            } else {
+                // If getMinecraftVersion() returns null, try to detect from server version string
+                String serverVersion = Bukkit.getVersion();
+                Bukkit.getLogger().info(DECORATED_NAME + "Server version: " + serverVersion);
+                if (serverVersion != null && serverVersion.contains("1.21.10")) {
+                    version = "v1_21_R6";
+                }
+            }
+            Bukkit.getLogger().info(DECORATED_NAME + "Mapped to NMS version: " + version);
+        }
 
+        String className = "net.seyarada.pandeloot.nms." + version + "." + version.toUpperCase();
+        Bukkit.getLogger().info(DECORATED_NAME + "Attempting to load class: " + className);
+        
         try {
-            final Class<?> clazz = Class.forName("net.seyarada.pandeloot.nms." + version + "." + version.toUpperCase());
+            final Class<?> clazz = Class.forName(className);
             // Check if we have a NMSHandler class at that location.
             if (NMSMethods.class.isAssignableFrom(clazz)) { // Make sure it actually implements NMS
                 nms = (NMSMethods) clazz.getConstructor().newInstance(); // Set our handler
@@ -34,7 +65,7 @@ public final class NMSManager {
             }
         } catch (final Exception e) {
             e.printStackTrace();
-            Bukkit.getLogger().severe(DECORATED_NAME + "Could not find support for this CraftBukkit version");
+            Bukkit.getLogger().severe(DECORATED_NAME + "Could not find support for this CraftBukkit version: " + className);
         }
     }
 
