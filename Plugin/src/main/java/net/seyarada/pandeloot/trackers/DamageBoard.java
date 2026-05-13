@@ -1,11 +1,18 @@
 package net.seyarada.pandeloot.trackers;
 
+import io.lumine.mythic.lib.api.event.IndicatorDisplayEvent;
+import io.lumine.mythic.lib.damage.indicator.DamageIndicators;
 import net.seyarada.pandeloot.Logger;
 import net.seyarada.pandeloot.utils.MathUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import pl.koral.mcskyblockcore.api.model.SkyblockPlayer;
 import pl.koral.mcskyblockcore.spigot.SkyblockCore;
 
@@ -185,6 +192,14 @@ public class DamageBoard {
 
     public static void remove(UUID uuid) {
         damageBoards.remove(uuid);
+    }
+
+
+    public static void handleDamageIndicator(@Nullable Player attacker, @NotNull Entity entity, double damageReceived, EntityDamageEvent event){
+        String capped = "§9[§f"+damageReceived+"§9]";
+        DamageIndicators.displaySimpleIndicator(attacker,entity,capped,event);
+
+        // DamageIndicators.this.indicatorConfig.displayIndicator(attacker, entity, joined, getDirection(event.toBukkit()), IndicatorDisplayEvent.IndicatorType.DAMAGE);
     }
 
 

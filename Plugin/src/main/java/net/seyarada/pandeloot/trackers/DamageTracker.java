@@ -17,10 +17,7 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.entity.EntitySpawnEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.*;
 
 import java.util.*;
 
@@ -30,7 +27,7 @@ public class DamageTracker implements Listener {
     private final Map<UUID, Long> deathTimeMap = new WeakHashMap<>();
 
 
-    @EventHandler(priority = EventPriority.MONITOR )
+    @EventHandler(priority = EventPriority.HIGHEST )
     public void onDamaged(EntityDamageByEntityEvent e) {
 
         UUID mob = e.getEntity().getUniqueId();
@@ -77,15 +74,14 @@ public class DamageTracker implements Listener {
             double healthToSet = livingEntity.getHealth() - formatedDamage <= 0 ? 0 : livingEntity.getHealth() - formatedDamage;
             DamageBoard.addPlayerDamage(mob, player, damage);
             if(customImmuneTicks >0) DamageBoard.addToNoDmgMsMap(mob, player, customImmuneTicks);
-
-
-
             livingEntity.setHealth(healthToSet);
+            DamageBoard.handleDamageIndicator(player,e.getEntity(),damage,e);
         } else {
             if (!DamageBoard.canPlayerAttack(mob, player)) {
                 e.setCancelled(true);
                 return;
             }
+
             DamageBoard.addPlayerDamage(mob, player, damage);
             if(customImmuneTicks >0) DamageBoard.addToNoDmgMsMap(mob, player, customImmuneTicks);
         }

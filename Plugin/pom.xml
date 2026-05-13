@@ -31,8 +31,14 @@
     <!-- MythicMobs -->
     <repository>
       <id>nexus</id>
+      <name>Lumine Public</name>
       <url>https://mvn.lumine.io/repository/maven-public/</url>
     </repository>
+    <repository>
+      <id>phoenix</id>
+      <url>https://nexus.phoenixdevt.fr/repository/maven-public/</url>
+    </repository>
+
 
     <!-- DiscordSVR -->
     <repository>
@@ -116,7 +122,7 @@
     <dependency>
       <groupId>io.lumine</groupId>
       <artifactId>MythicLib-dist</artifactId>
-      <version>1.3-SNAPSHOT</version>
+      <version>1.7.1.1-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
 
@@ -140,15 +146,15 @@
     <!-- MMOItems -->
     <dependency>
       <groupId>net.Indyuce</groupId>
-      <artifactId>MMOItems</artifactId>
-      <version>6.7</version>
+      <artifactId>MMOItems-API</artifactId>
+      <version>6.10.1-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>net.Indyuce</groupId>
-      <artifactId>MMOCore</artifactId>
-      <version>1.9.1</version>
+      <artifactId>MMOCore-API</artifactId>
+      <version>1.13.1-20260217.201914-51</version>
       <scope>provided</scope>
     </dependency>
 
