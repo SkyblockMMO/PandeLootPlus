@@ -51,7 +51,7 @@ public class DamageBoard {
     }
 
     public void compileInformation(boolean killLog) {
-        baseHealth = mobLiving.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+        baseHealth = mobLiving.getAttribute(Attribute.MAX_HEALTH).getValue();
         damageReceived = playersAndDamage.values().stream().mapToDouble(Double::valueOf).sum();
         sort(playersAndDamage, sortWithParty);
 

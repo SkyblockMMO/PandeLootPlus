@@ -74,41 +74,6 @@
   <dependencies>
     <dependency>
       <groupId>net.seyarada</groupId>
-      <artifactId>pandeloot-v1_19</artifactId>
-      <version>v1_19</version>
-      <type>jar</type>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>net.seyarada</groupId>
-      <artifactId>pandeloot-v1_19_2</artifactId>
-      <version>v1_19_2</version>
-      <type>jar</type>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>net.seyarada</groupId>
-      <artifactId>pandeloot-v1_19_3</artifactId>
-      <version>v1_19_3</version>
-      <type>jar</type>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>net.seyarada</groupId>
-      <artifactId>pandeloot-v1_20_2</artifactId>
-      <version>v1_20_2</version>
-      <type>jar</type>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>net.seyarada</groupId>
-      <artifactId>pandeloot-v1_21_10</artifactId>
-      <version>v1_21_10</version>
-      <type>jar</type>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>net.seyarada</groupId>
       <artifactId>pandeloot-api</artifactId>
       <version>API</version>
       <type>jar</type>
@@ -118,10 +83,18 @@
     <dependency>
       <groupId>org.spigotmc</groupId>
       <artifactId>spigot-api</artifactId>
-      <version>1.17.1-R0.1-SNAPSHOT</version>
-      <type>jar</type>
+      <version>1.21.10-R0.1-SNAPSHOT</version>
+      <classifier>shaded</classifier>
       <scope>provided</scope>
-      <optional>true</optional>
+    </dependency>
+
+    <!-- Spigot NMS version -->
+    <dependency>
+      <groupId>org.spigotmc</groupId>
+      <artifactId>spigot</artifactId>
+      <version>1.21.10-R0.1-SNAPSHOT</version>
+      <classifier>remapped-mojang</classifier>
+      <scope>provided</scope>
     </dependency>
 
 

@@ -1,36 +1,35 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>net.seyarada</groupId>
-  <artifactId>pandeloot-parent</artifactId>
-  <packaging>pom</packaging>
-  <version>parent</version>
-  <name>PandeLoot Parent</name>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>net.seyarada</groupId>
+    <artifactId>pandeloot-parent</artifactId>
+    <packaging>pom</packaging>
+    <version>parent</version>
+    <name>PandeLoot Parent</name>
 
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>21</maven.compiler.source>
-    <maven.compiler.target>21</maven.compiler.target>
-  </properties>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+    </properties>
 
-  <modules>
-    <module>API</module>
-<!--    <module>v1_17</module>-->
-<!--    <module>v1_18</module>
-    <module>v1_18_2</module>-->
-<!--    <module>v1_19</module>-->
-<!--    <module>v1_19_2</module>-->
-<!--    <module>v1_19_3</module>-->
-<!--    <module>v1_20_2</module>-->
-    <module>v1_21_10</module>
-    <module>Plugin</module>
-  </modules>
+    <modules>
+        <module>API</module>
+        <!--    <module>v1_17</module>-->
+        <!--    <module>v1_18</module>
+            <module>v1_18_2</module>-->
+        <!--    <module>v1_19</module>-->
+        <!--    <module>v1_19_2</module>-->
+        <!--    <module>v1_19_3</module>-->
+        <!--    <module>v1_20_2</module>-->
+        <module>Plugin</module>
+    </modules>
 
-  <repositories>
-    <repository>
-      <id>spigot-repo</id>
-      <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
-    </repository>
-  </repositories>
+    <repositories>
+        <repository>
+            <id>spigot-repo</id>
+            <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+        </repository>
+    </repositories>
 
 </project>

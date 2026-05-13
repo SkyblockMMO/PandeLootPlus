@@ -13,7 +13,7 @@ public final class NMSManager {
     public static final String CONSOLE_ACCENT = "\u001b[38;5;180m";
     public static final String CONSOLE_ACCENT_RESET = "\u001b[0m";
     public static final String PLUGIN_NAME = "PandeLoot";
-    public static final String DECORATED_NAME = CONSOLE_ACCENT +"["+ PLUGIN_NAME +"] "+ CONSOLE_ACCENT_RESET;
+    public static final String DECORATED_NAME = CONSOLE_ACCENT + "[" + PLUGIN_NAME + "] " + CONSOLE_ACCENT_RESET;
 
     static final Map<Integer, List<UUID>> hiddenItems = new ConcurrentHashMap<>();
     static NMSMethods nms;
@@ -24,9 +24,9 @@ public final class NMSManager {
         // org.bukkit.craftbukkit.version (or org.bukkit.craftbukkit for 1.20.5+)
         String version = packageName.substring(packageName.lastIndexOf('.') + 1);
         // Get the last element of the package
-        
+
         Bukkit.getLogger().info(DECORATED_NAME + "Detected package version: " + version);
-        
+
         // Handle versions without package suffix (1.20.5+)
         if (version.equals("craftbukkit") || version.equals("craftserver")) {
             String mcVersion = Bukkit.getVersion();
@@ -55,14 +55,14 @@ public final class NMSManager {
 
         String className = "net.seyarada.pandeloot.nms." + version + "." + version.toUpperCase();
         Bukkit.getLogger().info(DECORATED_NAME + "Attempting to load class: " + className);
-        
+
         try {
-            final Class<?> clazz = Class.forName(className);
+
             // Check if we have a NMSHandler class at that location.
-            if (NMSMethods.class.isAssignableFrom(clazz)) { // Make sure it actually implements NMS
-                nms = (NMSMethods) clazz.getConstructor().newInstance(); // Set our handler
-                Bukkit.getLogger().info(DECORATED_NAME + "Loading support for " + version);
-            }
+
+            nms = new v1_21_R6();
+            Bukkit.getLogger().info(DECORATED_NAME + "Loading support for " + version);
+
         } catch (final Exception e) {
             e.printStackTrace();
             Bukkit.getLogger().severe(DECORATED_NAME + "Could not find support for this CraftBukkit version: " + className);
@@ -79,7 +79,7 @@ public final class NMSManager {
     }
 
     public static boolean isHiddenFor(int id, UUID p) {
-        if(hiddenItems.containsKey(id)) {
+        if (hiddenItems.containsKey(id)) {
             return !hiddenItems.get(id).contains(p);
         }
         return false;
