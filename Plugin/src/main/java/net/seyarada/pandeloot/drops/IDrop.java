@@ -23,10 +23,10 @@ public interface IDrop {
 
     default double getChance(LootDrop drop) {
         HashMap<ICondition, FlagPack.FlagModifiers> onSpawnConds = getFlagPack().conditionFlags.get(FlagTrigger.onspawn);
-        if(onSpawnConds==null) return 1;
+        if (onSpawnConds == null) return 1;
 
         ChanceFlag chanceFlag = (ChanceFlag) FlagManager.getFromID("chance");
-        if(onSpawnConds.containsKey(chanceFlag)) {
+        if (onSpawnConds.containsKey(chanceFlag)) {
             FlagPack.FlagModifiers modifiers = onSpawnConds.get(chanceFlag);
             return ChanceFlag.getChance(modifiers, drop);
         }
@@ -36,26 +36,30 @@ public interface IDrop {
 
     default boolean passesConditions(LootDrop lootDrop, ICondition... ignore) {
         List<ICondition> ignoreConditions = List.of(ignore);
-        if(!getFlagPack().conditionFlags.containsKey(FlagTrigger.onspawn)) return true;
-        for(Map.Entry<ICondition, FlagPack.FlagModifiers> entry : getFlagPack().conditionFlags.get(FlagTrigger.onspawn).entrySet()) {
+        if (!lootDrop.sourceEntity.getWorld().getName().equals(lootDrop.p.getWorld().getName())) return false;
+
+        if (lootDrop.sourceEntity.getLocation().distance(lootDrop.p.getLocation()) > 50) return false;
+
+        if (!getFlagPack().conditionFlags.containsKey(FlagTrigger.onspawn)) return true;
+        for (Map.Entry<ICondition, FlagPack.FlagModifiers> entry : getFlagPack().conditionFlags.get(FlagTrigger.onspawn).entrySet()) {
             ICondition condition = entry.getKey();
-            if(ignoreConditions.contains(condition)) continue;
+            if (ignoreConditions.contains(condition)) continue;
             FlagPack.FlagModifiers values = entry.getValue();
 
             boolean result = !condition.onCheck(values, lootDrop, this);
-            if(values.getBoolean("invert")) result = !result;
-            if(result) return false;
+            if (values.getBoolean("invert")) result = !result;
+            if (result) return false;
 
         }
         return true;
     }
 
     default boolean passesCondition(LootDrop lootDrop, ICondition condition) {
-        if(!getFlagPack().conditionFlags.containsKey(FlagTrigger.onspawn)) return true;
-        if(getFlagPack().conditionFlags.get(FlagTrigger.onspawn).containsKey(condition)) {
+        if (!getFlagPack().conditionFlags.containsKey(FlagTrigger.onspawn)) return true;
+        if (getFlagPack().conditionFlags.get(FlagTrigger.onspawn).containsKey(condition)) {
             FlagPack.FlagModifiers values = getFlagPack().conditionFlags.get(FlagTrigger.onspawn).get(condition);
             boolean result = condition.onCheck(values, lootDrop, this);
-            if(values.getBoolean("invert")) return !result;
+            if (values.getBoolean("invert")) return !result;
             return result;
         }
         return true;
@@ -77,7 +81,7 @@ public interface IDrop {
 
     static ArrayList<IDrop> getAsDrop(List<String> strListDrop, Player player, LootDrop drop) {
         ArrayList<IDrop> dropList = new ArrayList<>();
-        for(String str : strListDrop) {
+        for (String str : strListDrop) {
             dropList.add(getAsDrop(str, player, drop));
         }
         return dropList;
