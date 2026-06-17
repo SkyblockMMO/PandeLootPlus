@@ -21,7 +21,6 @@ public class ItemDrop implements IDrop {
     public ItemDrop(ItemStack item, FlagPack pack) {
         this.item = item;
         this.pack = pack;
-        Logger.log("Generated ItemDrop with %s and %s", item, pack);
     }
 
     @Override
