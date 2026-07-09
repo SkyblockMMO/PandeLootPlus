@@ -19,6 +19,7 @@ import net.seyarada.pandeloot.nms.NMSManager;
 import net.seyarada.pandeloot.nms.PlayerPacketListener;
 import net.seyarada.pandeloot.trackers.DamageBoard;
 import net.seyarada.pandeloot.trackers.DamageTracker;
+import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -56,6 +57,8 @@ public class PandeLoot extends JavaPlugin implements Listener {
         pluginManager.registerEvents(new PlayerPacketListener(), this);
         pluginManager.registerEvents(new DropEvents(), this);
         pluginManager.registerEvents(new ContainersGUI(null), this);
+
+        Bukkit.getScheduler().runTaskTimer(this, DamageBoard::cleanupStale, 20L * 60, 20L * 60);
     }
 
     @Override

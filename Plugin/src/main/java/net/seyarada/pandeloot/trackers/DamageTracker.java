@@ -92,6 +92,8 @@ public class DamageTracker implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onSpawn(EntitySpawnEvent e) {
+        if (PandeLoot.mythicEnabled) return;
+
         if (e.getEntity() instanceof LivingEntity entity) {
             ConfigurationSection config = Config.getMob(entity);
             if (config != null) {

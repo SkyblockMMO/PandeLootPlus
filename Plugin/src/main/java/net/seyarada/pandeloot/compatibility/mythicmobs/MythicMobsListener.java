@@ -3,6 +3,7 @@ package net.seyarada.pandeloot.compatibility.mythicmobs;
 import io.lumine.mythic.api.config.MythicConfig;
 import io.lumine.mythic.bukkit.events.MythicMechanicLoadEvent;
 import io.lumine.mythic.bukkit.events.MythicMobDeathEvent;
+import io.lumine.mythic.bukkit.events.MythicMobDespawnEvent;
 import io.lumine.mythic.bukkit.events.MythicMobSpawnEvent;
 import net.seyarada.pandeloot.Logger;
 import net.seyarada.pandeloot.drops.LootDrop;
@@ -39,7 +40,7 @@ public class MythicMobsListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onDeath(MythicMobDeathEvent e) {
         UUID mob = e.getEntity().getUniqueId();
         if(!DamageBoard.contains(mob)) return;
@@ -71,6 +72,11 @@ public class MythicMobsListener implements Listener {
         } finally {
             DamageBoard.remove(mob);
         }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onDespawn(MythicMobDespawnEvent e) {
+        DamageBoard.remove(e.getEntity().getUniqueId());
     }
 
 }
