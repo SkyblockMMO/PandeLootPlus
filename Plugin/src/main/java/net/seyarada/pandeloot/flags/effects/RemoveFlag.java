@@ -20,7 +20,7 @@ public class RemoveFlag implements IServerEvent, IEntityEvent {
 	public void onCallEntity(Entity item, ItemDropMeta meta) {
 		if(!meta.getBoolean()) return;
 		if(meta.trigger()==FlagTrigger.onpickup) return;
-		ActiveDrop.remove(item);
+		item.remove();
 	}
 
 	@Override

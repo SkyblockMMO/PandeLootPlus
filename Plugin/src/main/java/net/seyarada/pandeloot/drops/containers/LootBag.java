@@ -97,7 +97,10 @@ public final class LootBag extends LootTable {
             }
 
             iS.setAmount(iS.getAmount()-1);
-            if(iS.getAmount()<=0) ActiveDrop.remove(item);
+            if(iS.getAmount()<=0) {
+                item.remove();
+                ActiveDrop.cleanup(item);
+            }
 
             new LootDrop(ContainerManager.get(id), e.getPlayer(), item.getLocation())
                     .build()
