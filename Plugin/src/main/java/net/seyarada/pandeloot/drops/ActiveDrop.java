@@ -72,7 +72,12 @@ public class ActiveDrop {
         if(e!=null) activeDropItem.put(e, this);
         pack.trigger(FlagTrigger.onspawn, e, lootDrop, drop);
 
-        if(e!=null && pack.flags.containsKey(FlagTrigger.onland))
+        if(e==null || !e.isValid()) {
+            cleanup();
+            return;
+        }
+
+        if(pack.flags.containsKey(FlagTrigger.onland))
             startLandingRunnable(pack);
     }
 
@@ -97,7 +102,11 @@ public class ActiveDrop {
 
     public void startMagnetRunnable(double force, double distanceTrigger, int frequency) {
         magnetRunnableID = Bukkit.getScheduler().scheduleSyncRepeatingTask(PandeLoot.inst, () -> {
-            if(e==null || !e.isValid() || lootDrop.p==null ) {
+            if(e==null || !e.isValid()) {
+                cleanup();
+                return;
+            }
+            if(lootDrop==null || lootDrop.p==null) {
                 cancel();
                 return;
             }
@@ -134,7 +143,11 @@ public class ActiveDrop {
 
     public void startBeamRunnable(double height, int frequency) {
         beamRunnableID = Bukkit.getScheduler().scheduleSyncRepeatingTask(PandeLoot.inst, () -> {
-            if(e==null || !e.isValid() || lootDrop.p==null ) {
+            if(e==null || !e.isValid()) {
+                cleanup();
+                return;
+            }
+            if(lootDrop==null || lootDrop.p==null) {
                 cancel();
                 return;
             }
@@ -153,7 +166,11 @@ public class ActiveDrop {
 
     public void startFlyingParticleRunnable(int frequency) {
         flyingParticleRunnable = Bukkit.getScheduler().scheduleSyncRepeatingTask(PandeLoot.inst, () -> {
-            if(e==null || !e.isValid() || lootDrop.p==null ) {
+            if(e==null || !e.isValid()) {
+                cleanup();
+                return;
+            }
+            if(lootDrop==null || lootDrop.p==null) {
                 cancel();
                 return;
             }
@@ -291,7 +308,7 @@ public class ActiveDrop {
 
     void remove() {
         if(e!=null && e.isValid()) e.remove();
-        Bukkit.getScheduler().runTask(PandeLoot.inst, this::cleanup);
+        cleanup();
     }
 
     public void cleanup() {

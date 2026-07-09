@@ -17,6 +17,7 @@ public class GlowFlag implements IEntityEvent {
 	public void onCallEntity(Entity item, ItemDropMeta meta) {
 		item.setGlowing(meta.getBoolean());
 		ActiveDrop activeDrop = ActiveDrop.get(item);
+		if(activeDrop==null) return;
 		if(!activeDrop.getColor().equals(Constants.ACCENT) && meta.lootDrop()!=null)
 			ColorUtils.setItemColor(item, activeDrop.getColor(), meta.lootDrop().p);
 	}

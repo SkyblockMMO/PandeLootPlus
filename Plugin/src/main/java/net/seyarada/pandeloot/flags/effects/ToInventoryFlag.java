@@ -1,6 +1,5 @@
 package net.seyarada.pandeloot.flags.effects;
 
-import net.seyarada.pandeloot.drops.ActiveDrop;
 import net.seyarada.pandeloot.drops.ItemDropMeta;
 import net.seyarada.pandeloot.flags.FlagEffect;
 import net.seyarada.pandeloot.flags.enums.FlagPriority;
@@ -50,7 +49,7 @@ public class ToInventoryFlag implements IItemEvent {
             for (int i = 0; i < howManyToDrop; i++) {
                 Bukkit.getPluginManager().callEvent(new CustomPickupEvent(skyblockPlayer, newItem, item.getItemStack().getAmount(), null));
             }
-            ActiveDrop.remove(item);
+            item.remove();
         }
 
     }
