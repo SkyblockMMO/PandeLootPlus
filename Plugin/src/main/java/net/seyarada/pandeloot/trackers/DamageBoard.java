@@ -146,6 +146,7 @@ public class DamageBoard {
             UUID playerUUID = player.getUniqueId();
 
             DamageBoard board = damageBoards.get(damagedEntity);
+            if (board == null) return;
             board.playersAndDamage.merge(playerUUID, damage, Double::sum);
 
             board.lastHit = playerUUID;
@@ -159,6 +160,7 @@ public class DamageBoard {
 
             UUID playerUUID = player.getUniqueId();
             DamageBoard board = damageBoards.get(damagedEntity);
+            if (board == null) return false;
             long lastHitTime = board.noDamageTicksMap.getOrDefault(playerUUID, 0L);
             return lastHitTime <= System.currentTimeMillis();
 
@@ -171,6 +173,7 @@ public class DamageBoard {
 
             UUID playerUUID = player.getUniqueId();
             DamageBoard board = damageBoards.get(damagedEntity);
+            if (board == null) return;
             board.noDamageTicksMap.put(playerUUID, ms + System.currentTimeMillis());
         }
     }
@@ -185,11 +188,36 @@ public class DamageBoard {
     }
 
     public static void remove(UUID uuid) {
-        damageBoards.remove(uuid);
+        DamageBoard board = damageBoards.remove(uuid);
+        if (board != null) board.dispose();
     }
 
     public static void cleanupAll() {
+        damageBoards.values().forEach(DamageBoard::dispose);
         damageBoards.clear();
+    }
+
+    public static void cleanupStale() {
+        for (UUID uuid : new ArrayList<>(damageBoards.keySet())) {
+            Entity entity = Bukkit.getEntity(uuid);
+            if (entity == null || !entity.isValid()) {
+                remove(uuid);
+                continue;
+            }
+            if (entity instanceof LivingEntity living && living.isDead()) {
+                remove(uuid);
+            }
+        }
+    }
+
+    private void dispose() {
+        mobLiving = null;
+        playersAndDamage.clear();
+        noDamageTicksMap.clear();
+        playerRanks.clear();
+        playerDamages.clear();
+        placeholders.clear();
+        sortedPlayers = null;
     }
 
 
