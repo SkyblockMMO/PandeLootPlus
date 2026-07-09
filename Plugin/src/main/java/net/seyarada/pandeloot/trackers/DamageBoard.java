@@ -89,6 +89,7 @@ public class DamageBoard {
             System.out.println(soutMap);
 
         }
+        mobLiving = null;
     }
 
     public String getPercent(int rank, boolean isRatio) {
@@ -192,6 +193,10 @@ public class DamageBoard {
 
     public static void remove(UUID uuid) {
         damageBoards.remove(uuid);
+    }
+
+    public static void cleanupAll() {
+        damageBoards.clear();
     }
 
 

@@ -10,43 +10,24 @@ import net.seyarada.pandeloot.flags.types.IServerEvent;
 import net.seyarada.pandeloot.nms.NMSManager;
 import net.seyarada.pandeloot.utils.ItemUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
+import org.bukkit.event.entity.ItemDespawnEvent;
 import org.bukkit.event.entity.ItemMergeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ActiveDropListener implements Listener {
-
-    private int id;
-
-    public void checkForLandings(Entity i, FlagPack pack) {
-        AtomicBoolean hasLanded = new AtomicBoolean(false);
-
-        id = Bukkit.getScheduler().scheduleSyncRepeatingTask(PandeLoot.inst, () -> {
-
-            if(!i.isValid()) Bukkit.getScheduler().cancelTask(id);
-
-            if(i.isOnGround() && !hasLanded.get()) {
-                ActiveDrop activeDrop = ActiveDrop.get(i);
-                hasLanded.set(true);
-                pack.trigger(FlagTrigger.onland, i, activeDrop.lootDrop, activeDrop.iDrop);
-            } else if(!i.isOnGround()) {
-                hasLanded.set(false);
-            }
-
-        }, 0, 3);
-    }
 
     @EventHandler
     public void onPickup(EntityPickupItemEvent e) {
@@ -76,8 +57,16 @@ public class ActiveDropListener implements Listener {
         }
 
         FlagPack pack = activeDrop.flags;
-        if(pack==null) return;
-        if(!pack.flags.containsKey(FlagTrigger.onpickup)) return;
+        LootDrop lootDrop = activeDrop.lootDrop;
+        IDrop iDrop = activeDrop.iDrop;
+        if(pack==null) {
+            cleanupWhenRemoved(i);
+            return;
+        }
+        if(!pack.flags.containsKey(FlagTrigger.onpickup)) {
+            cleanupWhenRemoved(i);
+            return;
+        }
 
         for(Map.Entry<IFlag, FlagPack.FlagModifiers> flag : pack.flags.get(FlagTrigger.onpickup).entrySet()) {
             IFlag flagClass = flag.getKey();
@@ -87,8 +76,15 @@ public class ActiveDropListener implements Listener {
                 ((IServerEvent)flagClass).onCallCancellableEvent((Player) e.getEntity(), i, flagData, FlagTrigger.onpickup, e);
         }
 
-        if(!i.isValid()) i = null;
-        pack.trigger(FlagTrigger.onpickup, i, activeDrop.lootDrop, activeDrop.iDrop);
+        if(e.isCancelled()) {
+            if(!i.isValid()) ActiveDrop.cleanup(i);
+            return;
+        }
+
+        Item triggerItem = i.isValid() ? i : null;
+        pack.trigger(FlagTrigger.onpickup, triggerItem, lootDrop, iDrop);
+        if(!i.isValid()) ActiveDrop.cleanup(i);
+        else cleanupWhenRemoved(i);
     }
 
     @EventHandler
@@ -107,6 +103,29 @@ public class ActiveDropListener implements Listener {
         if(aE!=null || aT!=null) {
             e.setCancelled(true);
         }
+    }
+
+    @EventHandler
+    public void onItemDespawn(ItemDespawnEvent e) {
+        ActiveDrop.cleanup(e.getEntity());
+    }
+
+    @EventHandler
+    public void onEntityDeath(EntityDeathEvent e) {
+        ActiveDrop.cleanup(e.getEntity());
+    }
+
+    @EventHandler
+    public void onChunkUnload(ChunkUnloadEvent e) {
+        for(org.bukkit.entity.Entity entity : e.getChunk().getEntities()) {
+            ActiveDrop.cleanup(entity);
+        }
+    }
+
+    private void cleanupWhenRemoved(Item item) {
+        Bukkit.getScheduler().runTask(PandeLoot.inst, () -> {
+            if(!item.isValid()) ActiveDrop.cleanup(item);
+        });
     }
 
 }

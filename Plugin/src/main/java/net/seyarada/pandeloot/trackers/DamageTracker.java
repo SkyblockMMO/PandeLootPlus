@@ -18,6 +18,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.*;
+import org.bukkit.event.world.ChunkUnloadEvent;
 
 import java.util.*;
 
@@ -115,32 +116,41 @@ public class DamageTracker implements Listener {
         UUID mob = e.getEntity().getUniqueId();
         if (!DamageBoard.contains(mob)) return;
 
-        ConfigurationSection config = Config.getMob(e.getEntity());
-        if (config == null) return;
-        boolean scoreMessage = config.getBoolean("Options.ScoreMessage");
-        boolean scoreHologram = config.getBoolean("Options.ScoreHologram");
-        boolean killLog = config.getBoolean("Options.KillLog");
-
-        List<String> strings = config.getStringList("Rewards");
-
         DamageBoard damageBoard = DamageBoard.get(mob);
-        damageBoard.compileInformation(killLog);
+        try {
+            ConfigurationSection config = Config.getMob(e.getEntity());
+            if (config == null) return;
+            boolean scoreMessage = config.getBoolean("Options.ScoreMessage");
+            boolean scoreHologram = config.getBoolean("Options.ScoreHologram");
+            boolean killLog = config.getBoolean("Options.KillLog");
+
+            List<String> strings = config.getStringList("Rewards");
+
+            damageBoard.compileInformation(killLog);
 
 
-        for (UUID uuid : damageBoard.playersAndDamage.keySet()) {
-            Player player = Bukkit.getPlayer(uuid);
-            LootDrop lootDrop = new LootDrop(strings, player, e.getEntity().getLocation())
-                    .setDamageBoard(damageBoard)
-                    .setSourceEntity(e.getEntity())
-                    .build();
+            for (UUID uuid : damageBoard.playersAndDamage.keySet()) {
+                Player player = Bukkit.getPlayer(uuid);
+                LootDrop lootDrop = new LootDrop(strings, player, e.getEntity().getLocation())
+                        .setDamageBoard(damageBoard)
+                        .setSourceEntity(e.getEntity())
+                        .build();
 
-            if (scoreHologram) lootDrop.displayScoreHolograms();
-            if (scoreMessage) lootDrop.displayScoreMessage();
+                if (scoreHologram) lootDrop.displayScoreHolograms();
+                if (scoreMessage) lootDrop.displayScoreMessage();
 
-            lootDrop.drop();
+                lootDrop.drop();
+            }
+        } finally {
+            DamageBoard.remove(mob);
         }
+    }
 
-        DamageBoard.remove(mob);
+    @EventHandler
+    public void onChunkUnload(ChunkUnloadEvent e) {
+        for (org.bukkit.entity.Entity entity : e.getChunk().getEntities()) {
+            DamageBoard.remove(entity.getUniqueId());
+        }
     }
 
 }
