@@ -20,6 +20,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -35,9 +36,12 @@ public class ActiveDrop {
     int voidProtectionID = -1;
     int magnetRunnableID = -1;
     int flyingParticleRunnable = -1;
+    int landingRunnableID = -1;
     List<Entity> holograms;
     List<Player> hologramsPlayers;
     float rainbowDegrees = 0;
+    boolean hasLanded = false;
+    boolean cleanedUp = false;
 
     public boolean canBePickedUp = true;
 
@@ -65,11 +69,11 @@ public class ActiveDrop {
             origin = e.getLocation();
         }
 
-        activeDropItem.put(e, this);
+        if(e!=null) activeDropItem.put(e, this);
         pack.trigger(FlagTrigger.onspawn, e, lootDrop, drop);
 
-        if(pack.flags.containsKey(FlagTrigger.onland))
-            new ActiveDropListener().checkForLandings(e, pack);
+        if(e!=null && pack.flags.containsKey(FlagTrigger.onland))
+            startLandingRunnable(pack);
     }
 
     public void trigger(FlagTrigger trigger) {
@@ -78,7 +82,10 @@ public class ActiveDrop {
 
     public void startRainbowRunnable(int frequency) {
         rainbowRunnableID = Bukkit.getScheduler().scheduleSyncRepeatingTask(PandeLoot.inst, () -> {
-            if(!e.isValid()) cancel();
+            if(e==null || !e.isValid()) {
+                cleanup();
+                return;
+            }
 
             rainbowDegrees += 0.05;
             color = ChatColor.of(Color.getHSBColor(rainbowDegrees, 0.5f, 1));
@@ -90,7 +97,10 @@ public class ActiveDrop {
 
     public void startMagnetRunnable(double force, double distanceTrigger, int frequency) {
         magnetRunnableID = Bukkit.getScheduler().scheduleSyncRepeatingTask(PandeLoot.inst, () -> {
-            if(!e.isValid() || lootDrop.p==null ) cancel();
+            if(e==null || !e.isValid() || lootDrop.p==null ) {
+                cancel();
+                return;
+            }
 
             Location pL = lootDrop.p.getLocation().clone().add(0,1,0);
 
@@ -124,7 +134,10 @@ public class ActiveDrop {
 
     public void startBeamRunnable(double height, int frequency) {
         beamRunnableID = Bukkit.getScheduler().scheduleSyncRepeatingTask(PandeLoot.inst, () -> {
-            if(!e.isValid() || lootDrop.p==null ) cancel();
+            if(e==null || !e.isValid() || lootDrop.p==null ) {
+                cancel();
+                return;
+            }
 
             if(e.isOnGround()) {
                 double modHeight = height;
@@ -140,7 +153,10 @@ public class ActiveDrop {
 
     public void startFlyingParticleRunnable(int frequency) {
         flyingParticleRunnable = Bukkit.getScheduler().scheduleSyncRepeatingTask(PandeLoot.inst, () -> {
-            if(!e.isValid() || lootDrop.p==null ) cancel();
+            if(e==null || !e.isValid() || lootDrop.p==null ) {
+                cancel();
+                return;
+            }
 
             if(!e.isOnGround()) {
                 Particle.DustOptions dustOptions = new Particle.DustOptions(org.bukkit.Color.fromRGB(color.getColor().getRed(), color.getColor().getGreen(), color.getColor().getBlue()), 1);
@@ -164,7 +180,10 @@ public class ActiveDrop {
         droppedFlags.flags.remove(FlagTrigger.onspawn);
         List<IDrop> drops = bag.getDropList(drop);
         lootbagRollerID = Bukkit.getScheduler().scheduleSyncRepeatingTask(PandeLoot.inst, () -> {
-            if(!e.isValid()) cancel();
+            if(e==null || !e.isValid()) {
+                cleanup();
+                return;
+            }
 
             IDrop iDrop = drops.get((int) (Math.random() * drops.size()));
             ItemStack iS = iDrop.getItemStack();
@@ -183,7 +202,7 @@ public class ActiveDrop {
     }
 
     public void stopLootBagRunnable() {
-        Bukkit.getScheduler().cancelTask(lootbagRollerID);
+        if(lootbagRollerID>0) Bukkit.getScheduler().cancelTask(lootbagRollerID);
         lootbagRollerID = -1;
     }
 
@@ -192,7 +211,10 @@ public class ActiveDrop {
         this.hologramsPlayers = players;
         final Location[] oldLoc = {e.getLocation()};
         hologramRunnableID = Bukkit.getScheduler().scheduleSyncRepeatingTask(PandeLoot.inst, () -> {
-            if(!e.isValid()) cancel();
+            if(e==null || !e.isValid()) {
+                cleanup();
+                return;
+            }
             if(oldLoc[0].equals(e.getLocation())) return;
             oldLoc[0] = e.getLocation();
 
@@ -213,7 +235,10 @@ public class ActiveDrop {
     static final Vector noVelocity = new Vector(0,0,0);
     public void startVoidProtectionRunnable(double limit, int frequency) {
         voidProtectionID = Bukkit.getScheduler().scheduleSyncRepeatingTask(PandeLoot.inst, () -> {
-            if(!e.isValid()) cancel();
+            if(e==null || !e.isValid()) {
+                cleanup();
+                return;
+            }
 
             if(e.getFallDistance() > limit) {
                 e.setGravity(false);
@@ -222,6 +247,22 @@ public class ActiveDrop {
             }
 
         }, 0, frequency);
+    }
+
+    private void startLandingRunnable(FlagPack pack) {
+        landingRunnableID = Bukkit.getScheduler().scheduleSyncRepeatingTask(PandeLoot.inst, () -> {
+            if(e==null || !e.isValid()) {
+                cleanup();
+                return;
+            }
+
+            if(e.isOnGround() && !hasLanded) {
+                hasLanded = true;
+                pack.trigger(FlagTrigger.onland, e, lootDrop, iDrop);
+            } else if(!e.isOnGround()) {
+                hasLanded = false;
+            }
+        }, 0, 3);
     }
 
     public void setColor(ChatColor color) {
@@ -233,6 +274,7 @@ public class ActiveDrop {
     }
 
     public void updateColors() {
+        if(e==null || flags==null) return;
         if(e.isGlowing()) {
             if(flyingParticleRunnable==-1) {
                 int frequency = flags.getFlag(GlowFlag.class).getIntOrDefault("frequency", 2);
@@ -243,24 +285,87 @@ public class ActiveDrop {
     }
 
     void cancel() {
-        e.remove();
+        if(e!=null && e.isValid()) e.remove();
+        cleanup();
+    }
+
+    void remove() {
+        if(e!=null && e.isValid()) e.remove();
+        Bukkit.getScheduler().runTask(PandeLoot.inst, this::cleanup);
+    }
+
+    public void cleanup() {
+        if(cleanedUp) return;
+        cleanedUp = true;
+
+        if(e!=null) {
+            activeDropItem.remove(e);
+            NMSManager.removeHiddenItem(e.getEntityId());
+        }
+
         if(rainbowRunnableID>0) Bukkit.getScheduler().cancelTask(rainbowRunnableID);
         if(beamRunnableID>0) Bukkit.getScheduler().cancelTask(beamRunnableID);
         if(flyingParticleRunnable>0) Bukkit.getScheduler().cancelTask(flyingParticleRunnable);
         if(lootbagRollerID>0) Bukkit.getScheduler().cancelTask(lootbagRollerID);
         if(voidProtectionID>0) Bukkit.getScheduler().cancelTask(voidProtectionID);
         if(magnetRunnableID>0) Bukkit.getScheduler().cancelTask(magnetRunnableID);
+        if(landingRunnableID>0) Bukkit.getScheduler().cancelTask(landingRunnableID);
         if(hologramRunnableID>0) {
             Bukkit.getScheduler().cancelTask(hologramRunnableID);
-            for (Player player : hologramsPlayers) {
-                if (!player.isOnline()) continue;
-                holograms.stream().filter(Objects::nonNull).forEach(e -> NMSManager.get().destroyEntity(e.getEntityId(), player));
+            if(hologramsPlayers!=null && holograms!=null) {
+                for (Player player : hologramsPlayers) {
+                    if (!player.isOnline()) continue;
+                    holograms.stream().filter(Objects::nonNull).forEach(e -> NMSManager.get().destroyEntity(e.getEntityId(), player));
+                }
             }
         }
+
+        rainbowRunnableID = -1;
+        beamRunnableID = -1;
+        flyingParticleRunnable = -1;
+        lootbagRollerID = -1;
+        voidProtectionID = -1;
+        magnetRunnableID = -1;
+        landingRunnableID = -1;
+        hologramRunnableID = -1;
+
+        holograms = null;
+        hologramsPlayers = null;
+        flags = null;
+        lootDrop = null;
+        iDrop = null;
+        p = null;
+        e = null;
     }
 
     public static ActiveDrop get(Entity i) {
         return activeDropItem.get(i);
+    }
+
+    public static void cleanup(Entity i) {
+        ActiveDrop activeDrop = get(i);
+        if(activeDrop!=null) {
+            activeDrop.cleanup();
+        } else if(i!=null) {
+            NMSManager.removeHiddenItem(i.getEntityId());
+        }
+    }
+
+    public static void remove(Entity i) {
+        ActiveDrop activeDrop = get(i);
+        if(activeDrop!=null) {
+            activeDrop.remove();
+        } else if(i!=null) {
+            i.remove();
+            NMSManager.removeHiddenItem(i.getEntityId());
+        }
+    }
+
+    public static void cleanupAll() {
+        new ArrayList<>(activeDropItem.values()).stream()
+                .filter(Objects::nonNull)
+                .forEach(ActiveDrop::cleanup);
+        activeDropItem.clear();
     }
 
 }

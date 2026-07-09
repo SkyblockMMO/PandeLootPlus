@@ -1,5 +1,6 @@
 package net.seyarada.pandeloot.flags.effects;
 
+import net.seyarada.pandeloot.drops.ActiveDrop;
 import net.seyarada.pandeloot.drops.ItemDropMeta;
 import net.seyarada.pandeloot.flags.FlagEffect;
 import net.seyarada.pandeloot.flags.FlagPack;
@@ -19,7 +20,7 @@ public class RemoveFlag implements IServerEvent, IEntityEvent {
 	public void onCallEntity(Entity item, ItemDropMeta meta) {
 		if(!meta.getBoolean()) return;
 		if(meta.trigger()==FlagTrigger.onpickup) return;
-		item.remove();
+		ActiveDrop.remove(item);
 	}
 
 	@Override
@@ -28,7 +29,7 @@ public class RemoveFlag implements IServerEvent, IEntityEvent {
 		if(!values.getBoolean()) return;
 
 		e.setCancelled(true);
-		e.getItem().remove();
+		ActiveDrop.remove(e.getItem());
 	}
 
 

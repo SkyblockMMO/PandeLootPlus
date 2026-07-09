@@ -44,31 +44,33 @@ public class MythicMobsListener implements Listener {
         UUID mob = e.getEntity().getUniqueId();
         if(!DamageBoard.contains(mob)) return;
 
-        MythicConfig config = e.getMobType().getConfig();
-        boolean scoreMessage = config.getBoolean("Options.ScoreMessage");
-        boolean scoreHologram = config.getBoolean("Options.ScoreHologram");
-        boolean killLog = config.getBoolean("Options.KillLog");
-        List<String> strings = e.getMobType().getConfig().getStringList("Rewards");
-
-        Logger.record();
         DamageBoard damageBoard = DamageBoard.get(mob);
-        damageBoard.compileInformation(killLog);
+        try {
+            MythicConfig config = e.getMobType().getConfig();
+            boolean scoreMessage = config.getBoolean("Options.ScoreMessage");
+            boolean scoreHologram = config.getBoolean("Options.ScoreHologram");
+            boolean killLog = config.getBoolean("Options.KillLog");
+            List<String> strings = e.getMobType().getConfig().getStringList("Rewards");
 
-        for(UUID uuid : damageBoard.playersAndDamage.keySet()) {
-            Player player = Bukkit.getPlayer(uuid);
-            LootDrop lootDrop = new LootDrop(strings, player, e.getEntity().getLocation())
-                    .setDamageBoard(damageBoard)
-                    .setSourceEntity(e.getEntity())
-                    .build();
+            Logger.record();
+            damageBoard.compileInformation(killLog);
 
-            if(scoreHologram) lootDrop.displayScoreHolograms();
-            if(scoreMessage) lootDrop.displayScoreMessage();
+            for(UUID uuid : damageBoard.playersAndDamage.keySet()) {
+                Player player = Bukkit.getPlayer(uuid);
+                LootDrop lootDrop = new LootDrop(strings, player, e.getEntity().getLocation())
+                        .setDamageBoard(damageBoard)
+                        .setSourceEntity(e.getEntity())
+                        .build();
 
-            lootDrop.drop();
+                if(scoreHologram) lootDrop.displayScoreHolograms();
+                if(scoreMessage) lootDrop.displayScoreMessage();
+
+                lootDrop.drop();
+            }
+            Logger.print();
+        } finally {
+            DamageBoard.remove(mob);
         }
-        Logger.print();
-
-        DamageBoard.remove(mob);
     }
 
 }

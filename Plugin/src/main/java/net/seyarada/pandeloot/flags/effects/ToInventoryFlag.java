@@ -1,5 +1,6 @@
 package net.seyarada.pandeloot.flags.effects;
 
+import net.seyarada.pandeloot.drops.ActiveDrop;
 import net.seyarada.pandeloot.drops.ItemDropMeta;
 import net.seyarada.pandeloot.flags.FlagEffect;
 import net.seyarada.pandeloot.flags.enums.FlagPriority;
@@ -19,7 +20,7 @@ public class ToInventoryFlag implements IItemEvent {
 
         if (meta.getBoolean()) {
             meta.lootDrop().p.getInventory().addItem(item.getItemStack());
-            item.remove();
+            ActiveDrop.remove(item);
         }
 
     }
